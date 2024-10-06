@@ -1,171 +1,119 @@
-import streamlit as st
 from openai import OpenAI
-import speech_recognition as sr
-import config
 
-# Initialize OpenAI (or LLM of your choice)
-client = OpenAI(
-    api_key = config.api_key
-)
-
-def advanced_model(input_text):
-    response = client.chat_completions.create(
-    model="gpt-4",
-    messages=[
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": "Write Python code to call GPT-4."}
-    ]
-    )
-    return response
-
+client = OpenAI(api_key="???")
+import streamlit as st
 import speech_recognition as sr
 
-# Inject custom CSS for styling with Instrument Serif font and background image
 st.markdown("""
-    <style>
-    /* Custom font */
-    @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:wght@400&display=swap');
-
-    /* Background image styling */
-    body {
-        background-image: url("https://unblast.com/wp-content/uploads/2022/01/Paper-Texture-3.jpg");
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-attachment: fixed; /* Keeps the background fixed when scrolling */
-        font-family: 'Instrument Serif', serif; /* Apply custom font to the body */
-        color: #1E1C19; /* Set default text color */
-        text-transform: lowercase; /* Make all text lowercase */
-    }
-
-    /* Header animations */
-    h1, h2, h3 {
-        color: #46433E;
-        animation: fadeIn 2s ease-in-out;
-        text-transform: lowercase;
-    }
-
-    /* Button hover effect */
-    .stButton button {
-        background-color: #46433E !important;
-        color: white !important;
-        border-radius: 10px;
-        transition: transform 0.3s ease-in-out;
-        text-transform: lowercase;
-        font-family: 'Instrument Serif', serif;
-    }
-
-    .stButton button:hover {
-        transform: scale(1.05);
-        background-color: #D6D4D1 !important;
-    }
-
-    textarea {
-        transition: background-color 0.3s ease;
-        text-transform: lowercase;
-        font-family: 'Instrument Serif', serif;
-    }
-
-    textarea:focus {
-        background-color: #f3f3f3;
-    }
-
-    /* Animations */
-    @keyframes fadeIn {
-        0% { opacity: 0; }
-        100% { opacity: 1; }
-    }
-
-    /* Speech recognition output styling */
-    .speech-output {
-        font-size: 18px;
-        font-style: italic;
-        color: #1E1C19;
-        animation: fadeIn 2s ease-in-out;
-        text-transform: lowercase;
-    }
-    
-    .translated-text {
-        animation: textGlow 1.5s ease-in-out infinite alternate;
-        text-transform: lowercase;
-    }
-
-    @keyframes textGlow {
-        0% { color: #46433E; }
-        100% { color: #D6D4D1; }
-    }
-    </style>
     """, unsafe_allow_html=True)
-
-
-st.image("assets/head.png", use_column_width=True)
-
-# Display logos
-st.image("assets/tv.png", use_column_width=True)
-st.image("assets/pittapatta.png", use_column_width=True)
-st.image("assets/tagline.png", use_column_width=True)
-
-# Translation direction
-st.image("assets/selectdialects.png", use_column_width=True)
-translation_direction = st.selectbox('', ['english to creole', 'creole to english'])
-
-# Create side-by-side columns
-col1, col2 = st.columns(2)
-
-with col1:
-    st.image("assets/yourinput.png", use_column_width=True)
-    input_text = st.text_area('type here...', '')
-
-
-def convert_language(input_text, from_lang):
-    if from_lang == 'english to creole':
-        return f'creole {input_text} to english'
-    else:
-        return f'english {input_text} to creole'
-
-# Add button for conversion and show result in the second column
-if st.button('convert'):
-    if input_text.strip() != '':
-        translated_text = convert_language(input_text, translation_direction)
-        with col2:
-            st.image("assets/texttranslated.png", use_column_width=True)
-            st.markdown(f"<p class='translated-text'>{translated_text}</p>", unsafe_allow_html=True)
-    else:
-        st.warning('please enter some text to convert!')
-
-
-
-def recognize_speech():
-    recognizer = sr.Recognizer()
-    with sr.Microphone() as source:
-        st.info("listening...")
-        audio = recognizer.listen(source)
-        try:
-            text = recognizer.recognize_google(audio)
-            return text
-        except sr.UnknownValueError:
-            st.error("could not understand audio")
-        except sr.RequestError:
-            st.error("error with the speech recognition service")
-        return ""
-
-
-# Speech-to-text section
-if st.button('start voice input'):
-    speech_text = recognize_speech()
-    if speech_text:
-        with col1:
-            st.markdown(f"<p class='speech-output'>you said: {speech_text}</p>", unsafe_allow_html=True)
-
 
 def set_bg_hack_url():
     st.markdown(
         f"""
          <style>
          .stApp {{
-             background: url("https://unblast.com/wp-content/uploads/2022/01/Paper-Texture-3.jpg");
+             background: url("https://unblast.com/wp-content/uploads/2022/01/Paper-Texture-1.jpg");
              background-size: cover
          }}
          </style>
          """,
         unsafe_allow_html=True
     )
+
+set_bg_hack_url()
+st.image("assets/head.png", use_column_width=True)
+
+st.markdown('<div class="wiggle">', unsafe_allow_html=True)
+st.image("assets/tv.png", use_column_width=True)
+st.markdown('</div>', unsafe_allow_html=True)
+
+st.image("assets/pittapatta.png", use_column_width=True)
+st.image("assets/tagline.png", use_column_width=True)
+
+st.image("assets/selectdialects.png", use_column_width=True)
+
+translation_direction = st.selectbox('', [
+    'english ⟺ creole',
+    'creole ⟺ english',
+    'english ⟺ jamaican patois',
+    'jamaican patois ⟺ english',
+    'english ⟺ nigerian pidgin',
+    'nigerian pidgin ⟺ english'
+])
+
+st.image("assets/makeinputs.png", use_column_width=True)
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.image("assets/inputcat.png", width=10, use_column_width=True)
+    st.image("assets/yourinput.png", use_column_width=True)
+
+    if 'input_text' not in st.session_state:
+        st.session_state.input_text = ''
+    if 'translated_text' not in st.session_state:
+        st.session_state.translated_text = ''
+
+    input_text = st.text_area("enter text here:", st.session_state.input_text)
+
+    def translate_text_via_openai(input_text, direction):
+        if direction == 'english ⟺ creole':
+            system_prompt = "You are a translator that converts English text to Trinidadian Creole. You stylize the input the same way. If you do not understand the text as the input language, or the text is not the input language, then you would output the original text."
+        elif direction == 'creole ⟺ english':
+            system_prompt = "You are a translator that converts Trinidadian Creole text to English. You stylize the input the same way. If you do not understand the text as the input language, or the text is not the input language, then you would output the original text."
+        elif direction == 'english ⟺ jamaican patois':
+            system_prompt = "You are a translator that converts English text to Jamaican Patois. You stylize the input the same way. If you do not understand the text as the input language, or the text is not the input language, then you would output the original text."
+        elif direction == 'jamaican patois ⟺ english':
+            system_prompt = "You are a translator that converts Jamaican Patois text to English. You stylize the input the same way. If you do not understand the text as the input language, or the text is not the input language, then you would output the original text."
+        elif direction == 'english ⟺ nigerian pidgin':
+            system_prompt = "You are a translator that converts English text to Nigerian Pidgin. You stylize the input the same way. If you do not understand the text as the input language, or the text is not the input language, then you would output the original text."
+        else:
+            system_prompt = "You are a translator that converts Nigerian Pidgin text to English. You stylize the input the same way. If you do not understand the text as the input language, or the text is not the input language, then you would output the original text."
+        try:
+            response = client.chat.completions.create(model="gpt-3.5-turbo",
+                                                      messages=[
+                                                          {"role": "system", "content": system_prompt},
+                                                          {"role": "user", "content": input_text}
+                                                      ],
+                                                      max_tokens=200,
+                                                      temperature=0.5)
+            translated_text = response.choices[0].message.content.strip()
+            return translated_text
+        except Exception as e:
+            return f"Error: {str(e)}"
+
+    def recognize_speech():
+        recognizer = sr.Recognizer()
+        with sr.Microphone() as source:
+            st.info("listening...")
+            audio = recognizer.listen(source)
+            try:
+                text = recognizer.recognize_google(audio)
+                return text
+            except sr.UnknownValueError:
+                st.error("could not understand audio")
+            except sr.RequestError:
+                st.error("error with the speech recognition service")
+        return ""
+
+    col3, col4 = st.columns(2)
+
+    with col3:
+        if st.button('translate!'):
+            if input_text.strip() != '':
+                with st.spinner("baking up your translation..."):
+                    st.session_state.translated_text = translate_text_via_openai(input_text, translation_direction)
+
+    with col4:
+        if st.button('speak'):
+            speech_text = recognize_speech()
+            if speech_text:
+                st.session_state.input_text = speech_text
+
+with col2:
+    st.image("assets/outputcat.png", width=10, use_column_width=True)
+    st.image("assets/texttranslated.png", use_column_width=True)
+    if st.session_state.translated_text:
+        st.markdown(f"<p class='translated-text'>{st.session_state.translated_text}</p>", unsafe_allow_html=True)
+
+st.image("assets/footer.png", use_column_width=True)
