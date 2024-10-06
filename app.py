@@ -52,6 +52,8 @@ with col1:
 
     input_text = st.text_area("enter text here:", st.session_state.input_text)
 
+    slider_value = st.slider('Adjust complexity level', min_value=0, max_value=10, value=5)
+
     def translate_text_via_openai(input_text, direction):
         system_prompts = {
             'english ⟺ creole': "you are a translator that converts English text to Trinidadian Creole and vice versa. you stylize the input the same way. If you do not understand the text as the input language, or the text is not the input language, then you would output the original text.",
@@ -72,7 +74,7 @@ with col1:
                     {"role": "user", "content": input_text}
                 ],
                 max_tokens=200,
-                temperature=0.5
+                temperature=0.5 * slider_value / 3
             )
             translated_text = response.choices[0].message.content.strip()
             return translated_text
@@ -116,66 +118,6 @@ with col2:
     if st.session_state.translated_text:
         st.markdown(f"<p class='translated-text'>{st.session_state.translated_text}</p>", unsafe_allow_html=True)
 
-# --------------------- Chatbot Section ---------------------
-
-st.markdown("<hr>", unsafe_allow_html=True)
-st.image("assets/pittatitle.png", use_column_width=True)
-st.image("assets/chatwithpitta.png")
-col5, col6 = st.columns(2)
-
-with col5:
-    st.image("assets/pitta.png")
-
-with col6:
-    if 'chat_history' not in st.session_state:
-        st.session_state.chat_history = []
-
-    def get_pitta_response(user_message, direction):
-        dialect_prompts = {
-            'english ⟺ creole': "you are pitta, a cheeky and sarcastic individual who speaks Trinidadian Creole exclusively. She never breaks character unless she is asked to translate, and she always speaks in lower case. She adds Japanese emoticons next to her messages sometimes.",
-            'creole ⟺ english': "you are pitta, a cheeky and sarcastic individual who speaks Trinidadian Creole exclusively. She never breaks character unless she is asked to translate, and she always speaks in lower case. She adds Japanese emoticons next to her messages sometimes.",
-            'english ⟺ jamaican patois': "you are pitta, a cheeky and sarcastic individual who speaks Jamaican Patois exclusively. She never breaks character unless she is asked to translate, and she always speaks in lower case. She adds Japanese emoticons next to her messages sometimes.",
-            'jamaican patois ⟺ english': "you are pitta, a cheeky and sarcastic individual who speaks Jamaican Patois exclusively. She never breaks character unless she is asked to translate, and she always speaks in lower case. She adds Japanese emoticons next to her messages sometimes.",
-            'english ⟺ nigerian pidgin': "you are pitta, a cheeky and sarcastic individual who speaks Nigerian Pidgin exclusively. She never breaks character unless she is asked to translate, and she always speaks in lower case. She adds Japanese emoticons next to her messages sometimes.",
-            'nigerian pidgin ⟺ english': "you are pitta, a cheeky and sarcastic individual who speaks Nigerian Pidgin exclusively. She never breaks character unless she is asked to translate, and she always speaks in lower case. She adds Japanese emoticons next to her messages sometimes."
-        }
-
-        system_prompt = dialect_prompts.get(direction, "you are pitta, a chatbot.")
-
-        try:
-            response = client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_message}
-                ],
-                max_tokens=200,
-                temperature=0.7,
-                stop=None
-            )
-            pitta_reply = response.choices[0].message.content.strip()
-            return pitta_reply
-        except Exception as e:
-            return f"pitta encountered an error: {str(e)}"
-
-    user_input = st.text_input("you:", key="chat_input")
-
-    if st.button("send"):
-        if user_input.strip() != "":
-            st.session_state.chat_history.append({"sender": "you", "message": user_input})
-
-            pitta_response = get_pitta_response(user_input, translation_direction)
-            st.session_state.chat_history.append({"sender": "pitta", "message": pitta_response})
-
-    for chat in st.session_state.chat_history:
-        if chat["sender"] == "you":
-            st.markdown(f"**you:** {chat['message']}")
-        else:
-            st.markdown(f"**pitta:** {chat['message']}")
-
-# --------------------- End of Chatbot Section ---------------------
-
-# Display additional images
 st.image("assets/pizzacoffeecat.png", use_column_width=True)
 st.image("assets/footer.png", use_column_width=True)
 st.image("assets/head.png", use_column_width=True)
