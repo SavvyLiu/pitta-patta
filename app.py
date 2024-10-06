@@ -1,4 +1,23 @@
 import streamlit as st
+from openai import OpenAI
+import speech_recognition as sr
+import config
+
+# Initialize OpenAI (or LLM of your choice)
+client = OpenAI(
+    api_key = config.api_key
+)
+
+def advanced_model(input_text):
+    response = client.chat_completions.create(
+    model="gpt-4",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Write Python code to call GPT-4."}
+    ]
+    )
+    return response
+
 import speech_recognition as sr
 
 # Inject custom CSS for styling with Instrument Serif font and background image
@@ -122,7 +141,8 @@ if st.button('convert'):
     else:
         st.warning('please enter some text to convert!')
 
-# Speech recognition function
+
+
 def recognize_speech():
     recognizer = sr.Recognizer()
     with sr.Microphone() as source:
