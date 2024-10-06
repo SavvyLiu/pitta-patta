@@ -1,7 +1,23 @@
 import streamlit as st
-import openai
+from openai import OpenAI
+import speech_recognition as sr
+import config
+
 # Initialize OpenAI (or LLM of your choice)
-# openai.api_key = 'YOUR_API_KEY'
+client = OpenAI(
+    api_key = config.api_key
+)
+
+def advanced_model(input_text):
+    response = client.chat_completions.create(
+    model="gpt-4",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Write Python code to call GPT-4."}
+    ]
+    )
+    return response
+
 
 def convert_language(input_text, from_lang):
     # Simulate a call to your LLM model
@@ -41,7 +57,7 @@ st.markdown("""
 You can also enable voice input by clicking [here](https://pypi.org/project/SpeechRecognition/) for instructions.
 """)
 
-import speech_recognition as sr
+
 
 def recognize_speech():
     recognizer = sr.Recognizer()
