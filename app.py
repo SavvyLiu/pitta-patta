@@ -1,6 +1,4 @@
-from openai import OpenAI
-
-client = OpenAI(api_key="")
+from ModelClean import translate
 
 import streamlit as st
 import speech_recognition as sr
@@ -103,7 +101,7 @@ with col1:
         if st.button('translate!'):
             if input_text.strip() != '':
                 with st.spinner("cookin'..."):
-                    st.session_state.translated_text = translate_text_via_openai(input_text, translation_direction)
+                    st.session_state.translated_text = translate(input_text, translation_direction)
 
     with col4:
         if st.button('speak'):
