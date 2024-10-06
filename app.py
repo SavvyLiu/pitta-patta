@@ -26,16 +26,6 @@ st.markdown("""
     /* Custom font */
     @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:wght@400&display=swap');
 
-    .stApp {{
-             background-image: url("https://unblast.com/wp-content/uploads/2022/01/Paper-Texture-3.jpg");
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-attachment: fixed; /* Keeps the background fixed when scrolling */
-        font-family: 'Instrument Serif', serif; /* Apply custom font to the body */
-        color: #1E1C19; /* Set default text color */
-        text-transform: lowercase; /* Make all text lowercase */
-         }}
-         
     /* Background image styling */
     body {
         background-image: url("https://unblast.com/wp-content/uploads/2022/01/Paper-Texture-3.jpg");
@@ -93,8 +83,7 @@ st.markdown("""
         animation: fadeIn 2s ease-in-out;
         text-transform: lowercase;
     }
-
-    /* Animation for translated text display */
+    
     .translated-text {
         animation: textGlow 1.5s ease-in-out infinite alternate;
         text-transform: lowercase;
@@ -106,6 +95,7 @@ st.markdown("""
     }
     </style>
     """, unsafe_allow_html=True)
+
 
 st.image("assets/head.png", use_column_width=True)
 
@@ -124,6 +114,7 @@ col1, col2 = st.columns(2)
 with col1:
     st.image("assets/yourinput.png", use_column_width=True)
     input_text = st.text_area('type here...', '')
+
 
 def convert_language(input_text, from_lang):
     if from_lang == 'english to creole':
@@ -157,9 +148,24 @@ def recognize_speech():
             st.error("error with the speech recognition service")
         return ""
 
+
 # Speech-to-text section
 if st.button('start voice input'):
     speech_text = recognize_speech()
     if speech_text:
         with col1:
             st.markdown(f"<p class='speech-output'>you said: {speech_text}</p>", unsafe_allow_html=True)
+
+
+def set_bg_hack_url():
+    st.markdown(
+        f"""
+         <style>
+         .stApp {{
+             background: url("https://unblast.com/wp-content/uploads/2022/01/Paper-Texture-3.jpg");
+             background-size: cover
+         }}
+         </style>
+         """,
+        unsafe_allow_html=True
+    )
